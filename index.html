@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WMS - Waste Management System</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <style>
     /* ===== Theme Variables ===== */
     :root {
@@ -46,6 +47,7 @@
         radial-gradient(circle at 10% 20%, rgba(46, 125, 50, 0.03) 0%, transparent 20%),
         radial-gradient(circle at 90% 80%, rgba(46, 125, 50, 0.02) 0%, transparent 25%);
       transition: background 0.5s ease;
+      overflow-x: hidden;
     }
 
     /* ===== Navigation ===== */
@@ -92,6 +94,13 @@
       color: white;
       font-size: 1.4rem;
       box-shadow: 0 4px 20px rgba(46, 125, 50, 0.4);
+      transform-style: preserve-3d;
+      transform: rotateX(15deg) rotateY(-15deg);
+      transition: transform 0.5s ease;
+    }
+
+    .logo-placeholder:hover {
+      transform: rotateX(0) rotateY(0) scale(1.1);
     }
 
     .nav-links {
@@ -109,12 +118,14 @@
       transition: var(--transition);
       position: relative;
       font-size: 1.05rem;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
     }
 
     .nav-links li a:hover {
       color: var(--accent);
       background: rgba(46, 125, 50, 0.06);
-      transform: translateY(-3px);
+      transform: translateY(-3px) translateZ(10px);
     }
 
     [data-theme="dark"] .nav-links li a:hover {
@@ -135,10 +146,12 @@
       justify-content: center;
       transition: var(--transition);
       box-shadow: 0 6px 20px rgba(46, 125, 50, 0.4);
+      transform-style: preserve-3d;
+      transform: rotateX(10deg);
     }
 
     .theme-toggle:hover {
-      transform: rotate(30deg) scale(1.1);
+      transform: rotate(30deg) scale(1.1) rotateX(0);
       box-shadow: 0 8px 25px rgba(46, 125, 50, 0.6);
     }
 
@@ -188,23 +201,43 @@
       background: radial-gradient(circle, rgba(30, 60, 30, 0.3) 0%, transparent 80%);
     }
 
-    /* Subtle leaf particles (dark mode only) */
-    [data-theme="dark"] .hero::after {
-      content: "🍃";
+    /* Floating 3D Icons */
+    .floating-icons {
       position: absolute;
-      font-size: 24px;
-      opacity: 0.15;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
       z-index: 1;
-      animation: float 15s infinite linear;
     }
 
-    [data-theme="dark"] .hero:nth-child(1)::after { top: 20%; left: 10%; animation-delay: 0s; }
-    [data-theme="dark"] .hero::after { top: 30%; left: 80%; animation-delay: -5s; font-size: 20px; }
-    [data-theme="dark"] .hero:nth-child(3)::after { top: 70%; left: 20%; animation-delay: -10s; font-size: 22px; }
+    .floating-icon {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.7;
+      filter: drop-shadow(0 0 5px rgba(0,0,0,0.3));
+      transform-style: preserve-3d;
+      animation: float 15s infinite ease-in-out;
+    }
 
     @keyframes float {
-      0% { transform: translateY(0) translateX(0) rotate(0); }
-      100% { transform: translateY(-100vh) translateX(20px) rotate(360deg); }
+      0%, 100% {
+        transform: translateY(0) translateX(0) rotateZ(0deg);
+        opacity: 0.3;
+      }
+      25% {
+        transform: translateY(-100px) translateX(50px) rotateZ(10deg);
+        opacity: 0.7;
+      }
+      50% {
+        transform: translateY(-150px) translateX(-30px) rotateZ(-10deg);
+        opacity: 0.9;
+      }
+      75% {
+        transform: translateY(-80px) translateX(-60px) rotateZ(15deg);
+        opacity: 0.6;
+      }
     }
 
     .hero h1 {
@@ -215,6 +248,7 @@
       font-weight: 800;
       text-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
       letter-spacing: -1px;
+      transform: translateZ(30px);
     }
 
     [data-theme="dark"] .hero h1 {
@@ -229,6 +263,7 @@
       z-index: 2;
       opacity: 0.95;
       font-weight: 500;
+      transform: translateZ(20px);
     }
 
     .hero button {
@@ -246,6 +281,7 @@
       z-index: 2;
       letter-spacing: 0.8px;
       font-family: 'Poppins', sans-serif;
+      transform: translateZ(40px);
     }
 
     [data-theme="dark"] .hero button {
@@ -256,7 +292,7 @@
 
     .hero button:hover {
       background: #f0fff4;
-      transform: translateY(-8px) scale(1.05);
+      transform: translateY(-8px) scale(1.05) translateZ(50px);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
     }
 
@@ -269,6 +305,7 @@
     section {
       padding: 8rem 2.8rem;
       text-align: center;
+      position: relative;
     }
 
     section h2 {
@@ -278,6 +315,7 @@
       font-weight: 800;
       position: relative;
       display: inline-block;
+      transform: translateZ(20px);
     }
 
     section h2::after {
@@ -296,6 +334,7 @@
       max-width: 800px;
       margin: 0 auto;
       line-height: 1.75;
+      transform: translateZ(10px);
     }
 
     /* ===== Services ===== */
@@ -320,6 +359,8 @@
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.2);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      transform-style: preserve-3d;
+      transform: translateZ(0);
     }
 
     [data-theme="dark"] .service {
@@ -339,7 +380,7 @@
     }
 
     .service:hover {
-      transform: translateY(-14px);
+      transform: translateY(-14px) translateZ(20px);
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
     }
 
@@ -352,6 +393,21 @@
       margin-bottom: 1.1rem;
       font-size: 1.5rem;
       font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .service-icon {
+      display: inline-block;
+      transform-style: preserve-3d;
+      transition: transform 0.3s ease;
+      font-size: 1.8rem;
+    }
+
+    .service:hover .service-icon {
+      transform: rotateY(360deg) scale(1.2);
     }
 
     .service p {
@@ -374,6 +430,8 @@
       border-radius: var(--border-radius);
       box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
       border: 1px solid rgba(255, 255, 255, 0.25);
+      transform-style: preserve-3d;
+      transform: translateZ(0);
     }
 
     [data-theme="dark"] form {
@@ -393,6 +451,8 @@
       transition: var(--transition);
       outline: none;
       font-family: 'Poppins', sans-serif;
+      transform-style: preserve-3d;
+      transform: translateZ(0);
     }
 
     form input:focus,
@@ -400,6 +460,7 @@
     form select:focus {
       border-color: var(--accent);
       box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.25);
+      transform: translateZ(10px);
     }
 
     form button {
@@ -432,7 +493,7 @@
 
     form button:hover {
       background: var(--accent-glow);
-      transform: translateY(-5px);
+      transform: translateY(-5px) translateZ(15px);
       box-shadow: 0 12px 35px rgba(46, 125, 50, 0.6);
     }
 
@@ -505,9 +566,31 @@
       .logo-placeholder { width: 42px; height: 42px; font-size: 1.25rem; }
       section h2 { font-size: 2.1rem; }
     }
+
+    /* Scroll Progress Bar */
+    #progress-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 9999;
+    }
+
+    #progress-bar {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
   </style>
 </head>
 <body>
+  <!-- Scroll Progress Bar -->
+  <div id="progress-container">
+    <div id="progress-bar"></div>
+  </div>
 
   <!-- Navigation -->
   <nav>
@@ -536,6 +619,7 @@
 
   <!-- Hero -->
   <div class="hero" id="home">
+    <div class="floating-icons" id="floatingIcons"></div>
     <h1>Green Today, Greater Tomorrow</h1>
     <p>Empowering communities with smart, sustainable waste management solutions. Report, schedule, and track — all in one place.</p>
     <button onclick="document.getElementById('reports').scrollIntoView({behavior:'smooth'})">Report Waste Now</button>
@@ -552,15 +636,15 @@
     <h2>Eco-Services</h2>
     <div class="services">
       <div class="service">
-        <h3>🪴 Waste Reporting</h3>
+        <h3><span class="service-icon">🪴</span> Waste Reporting</h3>
         <p>Instantly notify authorities about illegal dumping, overflowing bins, or hazardous waste with geotagged reports.</p>
       </div>
       <div class="service">
-        <h3>🗓️ Smart Scheduling</h3>
+        <h3><span class="service-icon">🗓️</span> Smart Scheduling</h3>
         <p>Book your waste pickup in seconds. Get reminders and calendar sync for hassle-free management.</p>
       </div>
       <div class="service">
-        <h3>📍 Live Collection Map</h3>
+        <h3><span class="service-icon">📍</span> Live Collection Map</h3>
         <p>Track your waste truck in real time and receive SMS/email notifications when it's near.</p>
       </div>
     </div>
@@ -639,6 +723,67 @@
         : '✅ Thank you! Your green action matters! 🌿';
       alert(msg);
       e.target.reset();
+    });
+
+    // Floating Icons in Hero Section
+    document.addEventListener('DOMContentLoaded', () => {
+      const floatingIconsContainer = document.getElementById('floatingIcons');
+      const icons = ['♻️', '🌱', '🌍', '💧', '🍃', '🌿', '🌳', '🚲'];
+      
+      for (let i = 0; i < 12; i++) {
+        const icon = document.createElement('div');
+        icon.className = 'floating-icon';
+        icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+        icon.style.left = `${Math.random() * 100}%`;
+        icon.style.top = `${Math.random() * 100}%`;
+        icon.style.fontSize = `${1.5 + Math.random() * 1.5}rem`;
+        icon.style.animationDelay = `${Math.random() * 15}s`;
+        floatingIconsContainer.appendChild(icon);
+      }
+    });
+
+    // Scroll Progress Bar
+    window.addEventListener('scroll', () => {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+    });
+
+    // Parallax Effect for Sections
+    document.addEventListener('DOMContentLoaded', () => {
+      const sections = document.querySelectorAll('section');
+      
+      window.addEventListener('scroll', () => {
+        sections.forEach(section => {
+          const rect = section.getBoundingClientRect();
+          const speed = rect.top / 10; // Adjust divisor to control effect strength
+          
+          // Only apply effect to sections that are in or near the viewport
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            const headings = section.querySelectorAll('h2, h3');
+            const paragraphs = section.querySelectorAll('p');
+            const services = section.querySelectorAll('.service');
+            const form = section.querySelector('form');
+            
+            headings.forEach(el => {
+              el.style.transform = `translateY(${speed * 0.3}px) translateZ(20px)`;
+            });
+            
+            paragraphs.forEach(el => {
+              el.style.transform = `translateY(${speed * 0.2}px) translateZ(10px)`;
+            });
+            
+            if (form) {
+              form.style.transform = `translateY(${speed * 0.25}px) translateZ(0)`;
+            }
+            
+            services.forEach(el => {
+              el.style.transform = `translateY(${speed * 0.15}px) translateZ(0)`;
+            });
+          }
+        });
+      });
     });
   </script>
 </body>
